@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TechShop" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Tùy chỉnh nếu cần -->
+    </style>
+</resources>

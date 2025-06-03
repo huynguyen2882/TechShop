@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "154276329171",
+    "firebase_url": "https://shopcongnghe-532b4-default-rtdb.firebaseio.com",
+    "project_id": "shopcongnghe-532b4",
+    "storage_bucket": "shopcongnghe-532b4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154276329171:android:73ef20ac5c8faececc0626",
+        "android_client_info": {
+          "package_name": "com.example.techshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1ZLkz7TiRTGIj09CcBKhqB0FxKZxi8to"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
