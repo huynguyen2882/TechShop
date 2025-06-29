@@ -72,6 +72,8 @@ dependencies {
     implementation ("androidx.compose.material:material-icons-core:1.6.8")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3") // Sử dụng phiên bản mới nhất
     implementation ("androidx.compose.material:material-icons-extended:1.6.8")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
 //    implementation(libs.androidx.credentials)
 //    implementation(libs.androidx.credentials.play.services.auth)
 //    implementation(libs.googleid)

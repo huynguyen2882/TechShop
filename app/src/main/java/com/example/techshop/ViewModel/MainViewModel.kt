@@ -83,16 +83,21 @@ class MainViewModel : ViewModel() {
             ref.limitToFirst(5).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val lists = mutableListOf<SliderModel>()
+                    android.util.Log.d("Banner", "Loading banners from Firebase...")
                     for (childSnapshot in snapshot.children) {
                         val list = childSnapshot.getValue(SliderModel::class.java)
+                        android.util.Log.d("Banner", "Banner data: ${childSnapshot.value}")
                         if (list != null) {
+                            android.util.Log.d("Banner", "Added banner: ${list.url}")
                             lists.add(list)
                         }
                     }
+                    android.util.Log.d("Banner", "Total banners loaded: ${lists.size}")
                     _banner.postValue(lists)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    android.util.Log.e("Banner", "Error loading banners: ${error.message}")
                     _banner.postValue(emptyList())
                 }
             })
@@ -102,19 +107,24 @@ class MainViewModel : ViewModel() {
     fun loadCategory() {
         viewModelScope.launch(Dispatchers.IO) {
             val ref = firebaseDatabase.getReference("Category")
-            ref.limitToFirst(10).addListenerForSingleValueEvent(object : ValueEventListener {
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val lists = mutableListOf<CategoryModel>()
+                    android.util.Log.d("Category", "Loading categories from Firebase...")
                     for (childSnapshot in snapshot.children) {
                         val list = childSnapshot.getValue(CategoryModel::class.java)
+                        android.util.Log.d("Category", "Category data: ${childSnapshot.value}")
                         if (list != null) {
+                            android.util.Log.d("Category", "Added category: ${list.title} - ${list.picUrl}")
                             lists.add(list)
                         }
                     }
+                    android.util.Log.d("Category", "Total categories loaded: ${lists.size}")
                     _category.postValue(lists)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    android.util.Log.e("Category", "Error loading categories: ${error.message}")
                     _category.postValue(emptyList())
                 }
             })

@@ -457,6 +457,12 @@ fun CategoryItem(item: CategoryModel, isSelected: Boolean, onItemClick: () -> Un
                 ColorFilter.tint(Color.White)
             } else {
                 ColorFilter.tint(Color.Black)
+            },
+            onError = {
+                android.util.Log.e("Category", "Error loading category image: ${item.picUrl}")
+            },
+            onSuccess = {
+                android.util.Log.d("Category", "Success loading category image: ${item.picUrl}")
             }
         )
         if (isSelected) {
@@ -513,7 +519,14 @@ fun AutoSlidingCarousel(
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-                    .height(150.dp)
+                    .height(150.dp),
+                onError = {
+                    // Log lỗi để debug
+                    android.util.Log.e("Banner", "Error loading image: ${banners[page].url}")
+                },
+                onSuccess = {
+                    android.util.Log.d("Banner", "Success loading image: ${banners[page].url}")
+                }
             )
         }
 

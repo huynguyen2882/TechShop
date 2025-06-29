@@ -21,9 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.techshop.Model.CategoryModel
 import com.example.techshop.Model.ItemsModel
 import com.example.techshop.R
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class AddEditProductActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,13 +65,36 @@ fun AddEditProductScreen(
     onBackClick: () -> Unit,
     onSave: (ItemsModel) -> Unit
 ) {
+    val context = LocalContext.current
     var title by remember { mutableStateOf(product?.title ?: "") }
     var description by remember { mutableStateOf(product?.description ?: "") }
     var price by remember { mutableStateOf(product?.price?.toString() ?: "") }
     var categoryId by remember { mutableStateOf(product?.categoryId ?: "") }
     var rating by remember { mutableStateOf(product?.rating?.toString() ?: "") }
+    var stock by remember { mutableStateOf(product?.stock?.toString() ?: "0") }
     var showRecommended by remember { mutableStateOf(product?.showRecommended ?: false) }
     var imageUrl by remember { mutableStateOf(product?.picUrl?.firstOrNull() ?: "") }
+
+    // Load categories
+    var categories by remember { mutableStateOf(listOf<CategoryModel>()) }
+    var expanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("Category")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val categoryList = mutableListOf<CategoryModel>()
+                for (childSnapshot in snapshot.children) {
+                    val category = childSnapshot.getValue(CategoryModel::class.java)
+                    if (category != null) {
+                        categoryList.add(category.copy(id = childSnapshot.key?.toIntOrNull() ?: 0))
+                    }
+                }
+                categories = categoryList
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
 
     Scaffold(
         topBar = {
@@ -133,16 +160,27 @@ fun AddEditProductScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
+
+            // Text field cho category ID
             OutlinedTextField(
                 value = categoryId,
                 onValueChange = { categoryId = it },
-                label = { Text("ID danh mục") },
+                label = { Text("ID danh mục (bắt buộc)") },
                 modifier = Modifier.fillMaxWidth()
             )
+
             OutlinedTextField(
                 value = rating,
                 onValueChange = { rating = it },
                 label = { Text("Đánh giá") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = stock,
+                onValueChange = { stock = it },
+                label = { Text("Số lượng tồn kho") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -158,6 +196,31 @@ fun AddEditProductScreen(
             }
             Button(
                 onClick = {
+                    // Validation
+                    if (title.isEmpty()) {
+                        Toast.makeText(context, "Vui lòng nhập tên sản phẩm", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    if (price.isEmpty() || price.toDoubleOrNull() == null) {
+                        Toast.makeText(context, "Vui lòng nhập giá hợp lệ", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    if (categoryId.isEmpty()) {
+                        Toast.makeText(context, "Vui lòng nhập ID danh mục", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+                    if (stock.isEmpty() || stock.toIntOrNull() == null) {
+                        Toast.makeText(context, "Vui lòng nhập số lượng tồn kho", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+
+                    // Kiểm tra category có tồn tại không
+                    val categoryExists = categories.any { it.id.toString() == categoryId }
+                    if (!categoryExists) {
+                        Toast.makeText(context, "ID danh mục không tồn tại! Vui lòng kiểm tra lại", Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
+
                     val newProduct = ItemsModel(
                         id = product?.id ?: "",
                         title = title,
@@ -165,6 +228,7 @@ fun AddEditProductScreen(
                         price = price.toDoubleOrNull() ?: 0.0,
                         categoryId = categoryId,
                         rating = rating.toDoubleOrNull() ?: 0.0,
+                        stock = stock.toIntOrNull() ?: 0,
                         showRecommended = showRecommended,
                         picUrl = arrayListOf(imageUrl),
                         model = product?.model ?: arrayListOf()

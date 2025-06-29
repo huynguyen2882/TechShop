@@ -12,6 +12,7 @@ data class ItemsModel(
     var price: Double = 0.0,
     var rating: Double = 0.0,
     var numberInCart: Int = 0,
+    var stock: Int = 0, // Số lượng tồn kho
     var showRecommended: Boolean = false,
     var categoryId: String = "",
     var timestamp: Long = System.currentTimeMillis()
@@ -25,6 +26,7 @@ data class ItemsModel(
         price = parcel.readDouble(),
         rating = parcel.readDouble(),
         numberInCart = parcel.readInt(),
+        stock = parcel.readInt(),
         showRecommended = parcel.readByte() != 0.toByte(),
         categoryId = parcel.readString() ?: "",
         timestamp = parcel.readLong()
@@ -39,6 +41,7 @@ data class ItemsModel(
         parcel.writeDouble(price)
         parcel.writeDouble(rating)
         parcel.writeInt(numberInCart)
+        parcel.writeInt(stock)
         parcel.writeByte(if (showRecommended) 1 else 0)
         parcel.writeString(categoryId)
         parcel.writeLong(timestamp)

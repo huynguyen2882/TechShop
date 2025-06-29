@@ -184,6 +184,23 @@ fun DetailScreen(
         }
         RatingBar(rating = item.rating)
 
+        // Hiển thị stock
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            Text(
+                text = "Tồn kho: ",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = "${item.stock} sản phẩm",
+                color = if (item.stock > 0) Color.Green else Color.Red,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         ModelSelector(
             models = item.model,
             selectedModeIndex = selectedModelIndex,
@@ -204,14 +221,18 @@ fun DetailScreen(
                 onClick = onAddToCartClick,
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.purple)
+                    containerColor = if (item.stock > 0) colorResource(R.color.purple) else Color.Gray
                 ),
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 8.dp)
-                    .height(50.dp)
+                    .height(50.dp),
+                enabled = item.stock > 0
             ) {
-                Text(text = "Buy Now", fontSize = 18.sp)
+                Text(
+                    text = if (item.stock > 0) "Buy Now" else "Hết hàng",
+                    fontSize = 18.sp
+                )
             }
             IconButton(
                 onClick = onCartClick,

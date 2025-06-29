@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.techshop.Model.ItemsModel
+import com.example.techshop.Model.SortOption
 import com.example.techshop.R
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -437,8 +438,4 @@ fun SearchResultsScreen() {
             }
         }
     }
-}
-
-enum class SortOption {
-    NONE, ASCENDING, DESCENDING
 }
